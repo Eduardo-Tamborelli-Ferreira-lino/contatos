@@ -101,6 +101,18 @@ public class Main {
                     }
                 }
             }
+            else {
+                var dao = new ContatoDao();
+                try{
+                    dao.salvar(new Contato(nome,numero));
+                    var contato = new ContatoDao();
+                    System.out.println("Contato salvo com sucesso.");
+                    return;
+                }catch (SQLException e){
+                    System.out.println("Erro ao acessar o banco de dados");
+                    e.printStackTrace();
+                }
+            }
         } catch (SQLException e) {
             System.out.println("Erro ao acessar o banco de dados");
             e.printStackTrace();
@@ -389,6 +401,98 @@ public class Main {
     }
 
     public static void buscarTodos(){
+        System.out.println("""
+                Você deseja buscar todos por :
+                1 - Nome
+                2 - Número
+                3 - Buscar por todos
+                4 - Buscar com IN
+                
+                Caso deseje retornar digite 0
+                """);
+        int opcao = SC.nextInt();
+        SC.nextLine();
+        switch (opcao){
+            case 1:{
+                buscarTodosNome();
+                break;
+            }
+            case 2:{
+                buscarTodosNumero();
+                break;
+            }
+            case 3:{
+                buscarTodosTudo();
+                break;
+            }
+            case 4:{
+                buscarPorIn();
+                break;
+            }
+            default:{
+                System.out.println("Opção escolhida incorretamente");
+                buscarTodos();
+            }
+        }
+    }
+
+    public static void buscarTodosNome(){
+        ArrayList <Contato> contatoNomes = new ArrayList<>();
+        System.out.println("""
+                        Insira o nome que deseja procurar
+                        """);
+        String nome = SC.nextLine();
+        var dao = new ContatoDao();
+        try{
+            contatoNomes = dao.buscarTodosNome(nome);
+            if (contatoNomes == null || contatoNomes.isEmpty()){
+                System.out.println("""
+                        Nenhum contato está cadastrado no sistema, 
+                        Cadastre um contato antes de querer deletar.
+                        """);
+            }
+            else {
+                System.out.println("Aqui está a lista de contatos:");
+                for (Contato contato : contatoNomes){
+                    System.out.println(contato.toString());
+                }
+            }
+        }
+        catch (SQLException e){
+            System.out.println("Erro ao acessar o banco de dados");
+            e.printStackTrace();
+        }
+    }
+
+    public static void buscarTodosNumero(){
+        ArrayList <Contato> contatoNomes = new ArrayList<>();
+        System.out.println("""
+                        Insira o número que deseja procurar
+                        """);
+        String numero = SC.nextLine();
+        var dao = new ContatoDao();
+        try{
+            contatoNomes = dao.buscarTodosNumero(numero);
+            if (contatoNomes == null || contatoNomes.isEmpty()){
+                System.out.println("""
+                        Nenhum contato está cadastrado no sistema, 
+                        Cadastre um contato antes de querer deletar.
+                        """);
+            }
+            else {
+                System.out.println("Aqui está a lista de contatos:");
+                for (Contato contato : contatoNomes){
+                    System.out.println(contato.toString());
+                }
+            }
+        }
+        catch (SQLException e){
+            System.out.println("Erro ao acessar o banco de dados");
+            e.printStackTrace();
+        }
+    }
+
+    public static void buscarTodosTudo(){
         ArrayList<Contato> contatos = new ArrayList<>();
         System.out.println("Vamos iniciar as buscas");
         var dao = new ContatoDao();
@@ -401,6 +505,27 @@ public class Main {
                 for (int i = 0; i < contatos.size(); i++){
                     System.out.println(contatos.get(i));
                 }
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro ao acessar o banco de dados");
+            e.printStackTrace();
+        }
+    }
+
+    public static void buscarPorIn(){
+        ArrayList<Contato> contatos = new ArrayList<>();
+        ArrayList<Integer> contatosId = new ArrayList<>();
+        var dao = new ContatoDao();
+        System.out.println("Insira a quantidade de ids que deseja buscas.");
+        int ids = SC.nextInt();
+        try {
+            for (int i = 1; i <= ids; i++) {
+                System.out.println("Informe o ID do " + i + "° contato");
+                contatosId.add(SC.nextInt());
+            }
+            contatos = dao.buscar(ids,contatosId);
+            for (Contato contato : contatos){
+                System.out.println(contato.toString());
             }
         } catch (SQLException e) {
             System.out.println("Erro ao acessar o banco de dados");

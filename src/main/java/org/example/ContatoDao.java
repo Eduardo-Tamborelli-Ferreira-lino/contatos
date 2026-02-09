@@ -139,6 +139,91 @@ public class ContatoDao {
         return null;
     }
 
+    public ArrayList<Contato> buscarTodosNome (String nome) throws SQLException{
+        ArrayList<Contato> nomes = new ArrayList<>();
+        String command = """
+                SELECT id,
+                        nome,
+                        numero
+                FROM contato 
+                WHERE nome like ?
+                """;
+        try (Connection conn = Conexao.conectar()){
+            PreparedStatement stmt = conn.prepareStatement(command);
+            stmt.setString(1, "%" + nome + "%");
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()){
+                nomes.add(new Contato(
+                        rs.getInt("id"),
+                        rs.getString("numero"),
+                        rs.getString("nome")
+                ));
+            }
+            return nomes;
+        }
+    }
+
+    public ArrayList<Contato> buscarTodosNumero (String numero) throws SQLException{
+        ArrayList<Contato> nomes = new ArrayList<>();
+        String command = """
+                SELECT id,
+                        nome,
+                        numero
+                FROM contato 
+                WHERE numero like ?
+                """;
+        try (Connection conn = Conexao.conectar()){
+            PreparedStatement stmt = conn.prepareStatement(command);
+            stmt.setString(1, "%" + numero + "%");
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()){
+                nomes.add(new Contato(
+                        rs.getInt("id"),
+                        rs.getString("numero"),
+                        rs.getString("nome")
+                ));
+            }
+            return nomes;
+        }
+    }
+
+    public ArrayList<Contato> buscar (int ids, ArrayList<Integer>listaIds)throws SQLException{
+        ArrayList <Contato> contatosId = new ArrayList<>();
+        String command = """
+                SELECT 
+                id,
+                nome,
+                numero
+                FROM contato
+                WHERE id IN (
+                """;
+        for (int i = 0; i < ids; i++) {
+            command +=  "?";
+            if(i < ids){
+                if(i == ids -1){
+                    break;
+                }
+                command += ",";
+            }
+        }
+        command += ")";
+        try(Connection conn = Conexao.conectar()){
+            PreparedStatement stmt = conn.prepareStatement(command);
+            for (int i = 1; i <= ids; i++) {
+                stmt.setInt(i, listaIds.get(i - 1));
+            }
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()){
+                contatosId.add(new Contato(
+                        rs.getInt("id"),
+                        rs.getString("nome"),
+                        rs.getString("numero")
+                ));
+            }
+            return contatosId;
+        }
+    }
+
     public ArrayList<Contato> buscarTodos ()throws SQLException{
         ArrayList <Contato> contatos = new ArrayList<>();
         String command = """
