@@ -155,8 +155,8 @@ public class ContatoDao {
             while (rs.next()){
                 nomes.add(new Contato(
                         rs.getInt("id"),
-                        rs.getString("numero"),
-                        rs.getString("nome")
+                        rs.getString("nome"),
+                        rs.getString("numero")
                 ));
             }
             return nomes;
@@ -179,8 +179,8 @@ public class ContatoDao {
             while (rs.next()){
                 nomes.add(new Contato(
                         rs.getInt("id"),
-                        rs.getString("numero"),
-                        rs.getString("nome")
+                        rs.getString("nome"),
+                        rs.getString("numero")
                 ));
             }
             return nomes;
